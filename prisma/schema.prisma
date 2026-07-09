@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Avaliacao {
+  id              String   @id @default(uuid())
+  banheiroId      String
+  limpeza         String   // Expected: "SATISFEITO" | "PARCIALMENTE" | "NAO_SATISFEITO"
+  papelHigienico  Boolean
+  saboneteLiquido Boolean
+  conservacao     String   // Expected: "SATISFEITO" | "PARCIALMENTE" | "NAO_SATISFEITO"
+  observacoes     String?
+  createdAt       DateTime @default(now())
+}
+
+model ChecklistFiscal {
+  id                      String   @id @default(uuid())
+  banheiroId              String
+  criterio                String   // Expected: "ATENDE", "SATISFATORIO", "NAO_ATENDE"
+  observacoes             String?
+  pisoLimpo               Boolean
+  vasosHigienizados       Boolean
+  piasLimpas              Boolean
+  espelhosLimpos          Boolean
+  papelHigienico          Boolean
+  papelToalha             Boolean
+  sabonete                Boolean
+  lixeirasLimpas          Boolean
+  ambienteSemOdor         Boolean
+  portasDivisoriasLimpas  Boolean
+  createdAt               DateTime @default(now())
+}

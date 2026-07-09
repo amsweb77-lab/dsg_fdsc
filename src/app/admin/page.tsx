@@ -1,0 +1,215 @@
+import prisma from '@/lib/prisma';
+import Link from 'next/link';
+import { QrCode, AlertTriangle, CheckCircle, Activity, LayoutDashboard, Clock, ArrowLeft } from 'lucide-react';
+
+export const metadata = {
+  title: 'Dashboard Admin | DSG',
+};
+
+export default async function AdminDashboard() {
+  // Fetch evaluations
+  const avaliacoes = await prisma.avaliacao.findMany({
+    orderBy: { createdAt: 'desc' },
+  });
+  
+  // Fetch checklists
+  const checklists = await prisma.checklistFiscal.findMany({
+    orderBy: { createdAt: 'desc' },
+  });
+
+  const total = avaliacoes.length;
+  const totalChecklists = checklists.length;
+  
+  const satisfiedLimpeza = avaliacoes.filter(a => a.limpeza === 'SATISFEITO').length;
+  const satisfacaoPerc = total > 0 ? Math.round((satisfiedLimpeza / total) * 100) : 0;
+
+  // Recent critical alerts (Last 24h: sem papel, sem sabonete ou NAO_SATISFEITO)
+  const oneDayAgo = new Date();
+  oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+  
+  const alertasCriticos = avaliacoes.filter(a => {
+    return a.createdAt >= oneDayAgo && 
+           (a.papelHigienico === false || a.saboneteLiquido === false || a.limpeza === 'NAO_SATISFEITO');
+  }).length;
+
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+      {/* Navbar */}
+      <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-4">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link href="/" className="p-2 bg-slate-50 dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+              <ArrowLeft className="w-5 h-5 text-slate-600 dark:text-slate-300" />
+            </Link>
+            <div className="flex items-center gap-3">
+              <div className="bg-brand-primary/10 p-2 rounded-xl text-brand-primary">
+                <LayoutDashboard className="w-6 h-6" />
+              </div>
+              <h1 className="text-xl font-bold text-slate-800 dark:text-white">DSG Painel Admin</h1>
+            </div>
+          </div>
+          <Link href="/admin/qrcodes" className="flex items-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-4 py-2 rounded-xl font-medium hover:bg-slate-800 transition-all">
+            <QrCode className="w-4 h-4" />
+            Gerar QR Codes
+          </Link>
+        </div>
+      </header>
+
+      <main className="max-w-6xl mx-auto p-4 py-8 space-y-8">
+        {/* KPI Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm flex items-center gap-4">
+            <div className="p-4 bg-brand-primary/10 text-brand-primary rounded-2xl">
+              <Activity className="w-8 h-8" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-slate-500">Avaliações de Usuários</p>
+              <h2 className="text-3xl font-bold">{total}</h2>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm flex items-center gap-4">
+            <div className="p-4 bg-emerald-500/10 text-emerald-500 rounded-2xl">
+              <CheckCircle className="w-8 h-8" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-slate-500">Satisfação Geral</p>
+              <h2 className="text-3xl font-bold">{satisfacaoPerc}%</h2>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-blue-100 dark:border-blue-900/30 shadow-sm flex items-center gap-4">
+            <div className="p-4 bg-blue-500/10 text-blue-500 rounded-2xl">
+              <Activity className="w-8 h-8" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-slate-500">Checklists Fiscais</p>
+              <h2 className="text-3xl font-bold text-blue-500">{totalChecklists}</h2>
+            </div>
+          </div>
+        </div>
+
+        {/* Avaliacoes Table */}
+        <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
+            <h3 className="text-lg font-bold">Avaliações de Usuários (Recentes)</h3>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 text-sm border-b border-slate-100 dark:border-slate-700">
+                  <th className="p-4 font-semibold">Data/Hora</th>
+                  <th className="p-4 font-semibold">Banheiro</th>
+                  <th className="p-4 font-semibold">Limpeza</th>
+                  <th className="p-4 font-semibold">Insumos</th>
+                  <th className="p-4 font-semibold">Obs</th>
+                </tr>
+              </thead>
+              <tbody>
+                {avaliacoes.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="p-8 text-center text-slate-500">
+                      Nenhuma avaliação registrada ainda.
+                    </td>
+                  </tr>
+                ) : (
+                  avaliacoes.slice(0, 50).map((a) => (
+                    <tr key={a.id} className="border-b border-slate-50 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-colors">
+                      <td className="p-4 text-sm text-slate-600 dark:text-slate-400 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-4 h-4 text-slate-400" />
+                          {a.createdAt.toLocaleString('pt-BR')}
+                        </div>
+                      </td>
+                      <td className="p-4 font-medium">{a.banheiroId}</td>
+                      <td className="p-4">
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                          a.limpeza === 'SATISFEITO' ? 'bg-emerald-100 text-emerald-700' : 
+                          a.limpeza === 'PARCIALMENTE' ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'
+                        }`}>
+                          {a.limpeza}
+                        </span>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex gap-2">
+                          {!a.papelHigienico && <span className="bg-rose-100 text-rose-700 px-2 py-0.5 rounded text-xs font-bold" title="Sem Papel">SP</span>}
+                          {!a.saboneteLiquido && <span className="bg-rose-100 text-rose-700 px-2 py-0.5 rounded text-xs font-bold" title="Sem Sabonete">SS</span>}
+                          {a.papelHigienico && a.saboneteLiquido && <span className="text-slate-400 text-xs">OK</span>}
+                        </div>
+                      </td>
+                      <td className="p-4 text-sm max-w-[200px] truncate text-slate-500" title={a.observacoes || ''}>
+                        {a.observacoes || '-'}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Checklists Fiscais Table */}
+        <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
+            <h3 className="text-lg font-bold">Checklists Fiscais (Recentes)</h3>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 text-sm border-b border-slate-100 dark:border-slate-700">
+                  <th className="p-4 font-semibold">Data/Hora</th>
+                  <th className="p-4 font-semibold">Banheiro</th>
+                  <th className="p-4 font-semibold">Critério</th>
+                  <th className="p-4 font-semibold">Itens OK/Total</th>
+                  <th className="p-4 font-semibold">Obs</th>
+                </tr>
+              </thead>
+              <tbody>
+                {checklists.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="p-8 text-center text-slate-500">
+                      Nenhum checklist registrado ainda.
+                    </td>
+                  </tr>
+                ) : (
+                  checklists.slice(0, 50).map((c) => {
+                    const totalItens = 10;
+                    const itensOk = [c.pisoLimpo, c.vasosHigienizados, c.piasLimpas, c.espelhosLimpos, c.papelHigienico, c.papelToalha, c.sabonete, c.lixeirasLimpas, c.ambienteSemOdor, c.portasDivisoriasLimpas].filter(Boolean).length;
+                    
+                    return (
+                      <tr key={c.id} className="border-b border-slate-50 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-colors">
+                        <td className="p-4 text-sm text-slate-600 dark:text-slate-400 whitespace-nowrap">
+                          <div className="flex items-center gap-2">
+                            <Clock className="w-4 h-4 text-slate-400" />
+                            {c.createdAt.toLocaleString('pt-BR')}
+                          </div>
+                        </td>
+                        <td className="p-4 font-medium">{c.banheiroId}</td>
+                        <td className="p-4">
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold text-white ${
+                            c.criterio === 'ATENDE' ? 'bg-emerald-500' : 
+                            c.criterio === 'SATISFATORIO' ? 'bg-amber-500' : 'bg-rose-500'
+                          }`}>
+                            {c.criterio}
+                          </span>
+                        </td>
+                        <td className="p-4">
+                          <span className={`font-mono text-sm ${itensOk === totalItens ? 'text-emerald-500' : 'text-amber-500'}`}>
+                            {itensOk}/{totalItens}
+                          </span>
+                        </td>
+                        <td className="p-4 text-sm max-w-[200px] truncate text-slate-500" title={c.observacoes || ''}>
+                          {c.observacoes || '-'}
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
