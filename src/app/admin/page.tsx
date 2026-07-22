@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { QrCode, AlertTriangle, CheckCircle, Activity, LayoutDashboard, Clock, ArrowLeft, Users } from 'lucide-react';
 import { LogoutButton } from './LogoutButton';
 import { ChecklistsTable } from './ChecklistsTable';
+import { AvaliacoesTable } from './AvaliacoesTable';
 
 export const metadata = {
   title: 'Dashboard Admin | DSG',
@@ -99,63 +100,7 @@ export default async function AdminDashboard() {
         </div>
 
         {/* Avaliacoes Table */}
-        <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
-            <h3 className="text-lg font-bold">Avaliações de Usuários (Recentes)</h3>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 text-sm border-b border-slate-100 dark:border-slate-700">
-                  <th className="p-4 font-semibold">Data/Hora</th>
-                  <th className="p-4 font-semibold">Banheiro</th>
-                  <th className="p-4 font-semibold">Limpeza</th>
-                  <th className="p-4 font-semibold">Insumos</th>
-                  <th className="p-4 font-semibold">Obs</th>
-                </tr>
-              </thead>
-              <tbody>
-                {avaliacoes.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="p-8 text-center text-slate-500">
-                      Nenhuma avaliação registrada ainda.
-                    </td>
-                  </tr>
-                ) : (
-                  avaliacoes.slice(0, 50).map((a) => (
-                    <tr key={a.id} className="border-b border-slate-50 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-colors">
-                      <td className="p-4 text-sm text-slate-600 dark:text-slate-400 whitespace-nowrap">
-                        <div className="flex items-center gap-2">
-                          <Clock className="w-4 h-4 text-slate-400" />
-                          {a.createdAt.toLocaleString('pt-BR')}
-                        </div>
-                      </td>
-                      <td className="p-4 font-medium">{a.banheiroId}</td>
-                      <td className="p-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          a.limpeza === 'SATISFEITO' ? 'bg-emerald-100 text-emerald-700' : 
-                          a.limpeza === 'PARCIALMENTE' ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'
-                        }`}>
-                          {a.limpeza}
-                        </span>
-                      </td>
-                      <td className="p-4">
-                        <div className="flex gap-2">
-                          {!a.papelHigienico && <span className="bg-rose-100 text-rose-700 px-2 py-0.5 rounded text-xs font-bold" title="Sem Papel">SP</span>}
-                          {!a.saboneteLiquido && <span className="bg-rose-100 text-rose-700 px-2 py-0.5 rounded text-xs font-bold" title="Sem Sabonete">SS</span>}
-                          {a.papelHigienico && a.saboneteLiquido && <span className="text-slate-400 text-xs">OK</span>}
-                        </div>
-                      </td>
-                      <td className="p-4 text-sm max-w-[200px] truncate text-slate-500" title={a.observacoes || ''}>
-                        {a.observacoes || '-'}
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <AvaliacoesTable avaliacoes={avaliacoes} />
 
         {/* Checklists Fiscais Table */}
         <ChecklistsTable checklists={checklists} />
