@@ -32,7 +32,10 @@ export default async function UsuariosPage() {
         <div className="lg:col-span-1">
           <div className="bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-700">
             <h2 className="text-lg font-bold mb-6">Novo Usuário</h2>
-            <form action={createUser} className="space-y-4">
+            <form action={async (formData) => {
+              'use server';
+              await createUser(formData);
+            }} className="space-y-4">
               <div>
                 <label className="text-sm font-semibold text-slate-600 dark:text-slate-300">Nome</label>
                 <input name="name" required className="w-full mt-1 p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-brand-primary" />
@@ -81,7 +84,10 @@ export default async function UsuariosPage() {
                     <span className={`text-xs font-bold px-3 py-1 rounded-full ${user.role === 'ADMIN' ? 'bg-indigo-100 text-indigo-700' : 'bg-emerald-100 text-emerald-700'}`}>
                       {user.role}
                     </span>
-                    <form action={deleteUser}>
+                    <form action={async (formData) => {
+                      'use server';
+                      await deleteUser(formData);
+                    }}>
                       <input type="hidden" name="id" value={user.id} />
                       <button type="submit" className="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-lg transition-colors" title="Excluir">
                         <Trash2 className="w-5 h-5" />
