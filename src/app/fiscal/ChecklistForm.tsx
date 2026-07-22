@@ -189,7 +189,7 @@ export default function ChecklistForm() {
                     onClick={() => toggleItem(item.id, true)}
                     className={clsx(
                       "px-4 py-2 rounded-lg text-sm font-semibold transition-all", 
-                      itens[item.id] === true ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm" : "text-slate-500"
+                      itens[item.id] === true ? "bg-emerald-500 text-white shadow-sm shadow-emerald-500/20" : "text-slate-500"
                     )}
                   >
                     SIM
