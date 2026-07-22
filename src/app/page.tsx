@@ -59,15 +59,7 @@ export default async function Home() {
                 </button>
               </form>
             </>
-          ) : (
-            <Link 
-              href="/login" 
-              className="flex items-center justify-center gap-2 w-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 py-4 px-6 rounded-2xl font-medium hover:bg-slate-200 dark:hover:bg-slate-600 transition-all active:scale-95"
-            >
-              <LogIn className="w-5 h-5" />
-              Acesso Restrito
-            </Link>
-          )}
+          ) : null}
 
         </div>
       </div>
