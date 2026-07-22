@@ -1,7 +1,10 @@
 import Link from 'next/link';
-import { ClipboardList, LayoutDashboard, ClipboardCheck } from 'lucide-react';
+import { ClipboardList, LayoutDashboard, ClipboardCheck, LogIn } from 'lucide-react';
+import { getSession } from '@/lib/auth';
 
-export default function Home() {
+export default async function Home() {
+  const session = await getSession();
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
       <div className="max-w-md w-full bg-white dark:bg-slate-800 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none p-8 text-center border border-slate-100 dark:border-slate-700">
@@ -13,27 +16,45 @@ export default function Home() {
           Sistema de monitoramento e avaliação em tempo real da limpeza dos banheiros.
         </p>
         <div className="flex flex-col gap-4">
-          <Link 
-            href="/admin" 
-            className="flex items-center justify-center gap-2 w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-4 px-6 rounded-2xl font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition-all active:scale-95"
-          >
-            <LayoutDashboard className="w-5 h-5" />
-            Acessar Dashboard
-          </Link>
-          <Link 
-            href="/fiscal" 
-            className="flex items-center justify-center gap-2 w-full bg-brand-secondary/10 text-brand-secondary py-4 px-6 rounded-2xl font-medium hover:bg-brand-secondary/20 transition-all active:scale-95"
-          >
-            <ClipboardCheck className="w-5 h-5" />
-            Checklist do Fiscal
-          </Link>
+          
           <Link 
             href="/avaliar" 
             className="flex items-center justify-center gap-2 w-full bg-brand-primary/10 text-brand-primary py-4 px-6 rounded-2xl font-medium hover:bg-brand-primary/20 transition-all active:scale-95"
           >
             <ClipboardList className="w-5 h-5" />
-            Simular Avaliação (Usuário)
+            Avaliar Banheiro (Público)
           </Link>
+
+          {session ? (
+            <>
+              {session.role === 'ADMIN' ? (
+                <Link 
+                  href="/admin" 
+                  className="flex items-center justify-center gap-2 w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 py-4 px-6 rounded-2xl font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition-all active:scale-95"
+                >
+                  <LayoutDashboard className="w-5 h-5" />
+                  Painel Administrativo
+                </Link>
+              ) : (
+                <Link 
+                  href="/fiscal" 
+                  className="flex items-center justify-center gap-2 w-full bg-brand-secondary/10 text-brand-secondary py-4 px-6 rounded-2xl font-medium hover:bg-brand-secondary/20 transition-all active:scale-95"
+                >
+                  <ClipboardCheck className="w-5 h-5" />
+                  Checklist do Fiscal
+                </Link>
+              )}
+            </>
+          ) : (
+            <Link 
+              href="/login" 
+              className="flex items-center justify-center gap-2 w-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 py-4 px-6 rounded-2xl font-medium hover:bg-slate-200 dark:hover:bg-slate-600 transition-all active:scale-95"
+            >
+              <LogIn className="w-5 h-5" />
+              Acesso Restrito
+            </Link>
+          )}
+
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import prisma from '@/lib/prisma';
 import Link from 'next/link';
-import { QrCode, AlertTriangle, CheckCircle, Activity, LayoutDashboard, Clock, ArrowLeft } from 'lucide-react';
+import { QrCode, AlertTriangle, CheckCircle, Activity, LayoutDashboard, Clock, ArrowLeft, Users } from 'lucide-react';
+import { LogoutButton } from './LogoutButton';
 
 export const metadata = {
   title: 'Dashboard Admin | DSG',
@@ -48,10 +49,17 @@ export default async function AdminDashboard() {
               <h1 className="text-xl font-bold text-slate-800 dark:text-white">DSG Painel Admin</h1>
             </div>
           </div>
-          <Link href="/admin/qrcodes" className="flex items-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-4 py-2 rounded-xl font-medium hover:bg-slate-800 transition-all">
-            <QrCode className="w-4 h-4" />
-            Gerar QR Codes
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link href="/admin/qrcodes" className="flex items-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-4 py-2 rounded-xl font-medium hover:bg-slate-800 transition-all">
+              <QrCode className="w-4 h-4" />
+              QR Codes
+            </Link>
+            <Link href="/admin/usuarios" className="flex items-center gap-2 bg-brand-primary/10 text-brand-primary px-4 py-2 rounded-xl font-medium hover:bg-brand-primary/20 transition-all">
+              <Users className="w-4 h-4" />
+              Usuários
+            </Link>
+            <LogoutButton />
+          </div>
         </div>
       </header>
 
