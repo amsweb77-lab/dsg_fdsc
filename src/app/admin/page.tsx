@@ -4,6 +4,7 @@ import { QrCode, AlertTriangle, CheckCircle, Activity, LayoutDashboard, Clock, A
 import { LogoutButton } from './LogoutButton';
 import { ChecklistsTable } from './ChecklistsTable';
 import { AvaliacoesTable } from './AvaliacoesTable';
+import { DashboardChart } from './DashboardChart';
 
 export const metadata = {
   title: 'Dashboard Admin | DSG',
@@ -34,6 +35,44 @@ export default async function AdminDashboard() {
     return a.createdAt >= oneDayAgo && 
            (a.papelHigienico === false || a.saboneteLiquido === false || a.limpeza === 'NAO_SATISFEITO');
   }).length;
+
+  // Generate chart data for the last 7 days
+  const last7Days = Array.from({length: 7}, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    // Use local date string to avoid timezone shifts
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }).reverse();
+
+  const chartData = last7Days.map(dateStr => {
+    const [year, month, day] = dateStr.split('-');
+    const displayDate = `${day}/${month}`;
+    
+    // Filter evaluations matching this date
+    const avalDay = avaliacoes.filter(a => {
+      const d = new Date(a.createdAt);
+      return d.getFullYear() === parseInt(year) && 
+             (d.getMonth() + 1) === parseInt(month) && 
+             d.getDate() === parseInt(day);
+    }).length;
+    
+    // Filter checklists matching this date
+    const checkDay = checklists.filter(c => {
+      const d = new Date(c.createdAt);
+      return d.getFullYear() === parseInt(year) && 
+             (d.getMonth() + 1) === parseInt(month) && 
+             d.getDate() === parseInt(day);
+    }).length;
+    
+    return {
+      name: displayDate,
+      'Avaliações (Público)': avalDay,
+      'Checklists (Encarregados)': checkDay
+    };
+  });
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -98,6 +137,9 @@ export default async function AdminDashboard() {
             </div>
           </div>
         </div>
+
+        {/* Chart */}
+        <DashboardChart data={chartData} />
 
         {/* Avaliacoes Table */}
         <AvaliacoesTable avaliacoes={avaliacoes} />
