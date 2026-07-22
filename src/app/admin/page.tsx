@@ -2,6 +2,7 @@ import prisma from '@/lib/prisma';
 import Link from 'next/link';
 import { QrCode, AlertTriangle, CheckCircle, Activity, LayoutDashboard, Clock, ArrowLeft, Users } from 'lucide-react';
 import { LogoutButton } from './LogoutButton';
+import { ChecklistsTable } from './ChecklistsTable';
 
 export const metadata = {
   title: 'Dashboard Admin | DSG',
@@ -157,70 +158,7 @@ export default async function AdminDashboard() {
         </div>
 
         {/* Checklists Fiscais Table */}
-        <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
-            <h3 className="text-lg font-bold">Checklists Encarregados(as) (Recentes)</h3>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 text-sm border-b border-slate-100 dark:border-slate-700">
-                  <th className="p-4 font-semibold">Data/Hora</th>
-                  <th className="p-4 font-semibold">Encarregado(a)</th>
-                  <th className="p-4 font-semibold">Banheiro</th>
-                  <th className="p-4 font-semibold">Critério</th>
-                  <th className="p-4 font-semibold">Itens OK/Total</th>
-                  <th className="p-4 font-semibold">Obs</th>
-                </tr>
-              </thead>
-              <tbody>
-                {checklists.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="p-8 text-center text-slate-500">
-                      Nenhum checklist registrado ainda.
-                    </td>
-                  </tr>
-                ) : (
-                  checklists.slice(0, 50).map((c) => {
-                    const totalItens = 10;
-                    const itensOk = [c.pisoLimpo, c.vasosHigienizados, c.piasLimpas, c.espelhosLimpos, c.papelHigienico, c.papelToalha, c.sabonete, c.lixeirasLimpas, c.ambienteSemOdor, c.portasDivisoriasLimpas].filter(Boolean).length;
-                    
-                    return (
-                      <tr key={c.id} className="border-b border-slate-50 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-colors">
-                        <td className="p-4 text-sm text-slate-600 dark:text-slate-400 whitespace-nowrap">
-                          <div className="flex items-center gap-2">
-                            <Clock className="w-4 h-4 text-slate-400" />
-                            {c.createdAt.toLocaleString('pt-BR')}
-                          </div>
-                        </td>
-                        <td className="p-4 font-medium text-slate-700 dark:text-slate-300">
-                          {c.userName || 'Sistema'}
-                        </td>
-                        <td className="p-4 font-medium">{c.banheiroId}</td>
-                        <td className="p-4">
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold text-white ${
-                            c.criterio === 'ATENDE' ? 'bg-emerald-500' : 
-                            c.criterio === 'SATISFATORIO' ? 'bg-amber-500' : 'bg-rose-500'
-                          }`}>
-                            {c.criterio}
-                          </span>
-                        </td>
-                        <td className="p-4">
-                          <span className={`font-mono text-sm ${itensOk === totalItens ? 'text-emerald-500' : 'text-amber-500'}`}>
-                            {itensOk}/{totalItens}
-                          </span>
-                        </td>
-                        <td className="p-4 text-sm max-w-[200px] truncate text-slate-500" title={c.observacoes || ''}>
-                          {c.observacoes || '-'}
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <ChecklistsTable checklists={checklists} />
       </main>
     </div>
   );
