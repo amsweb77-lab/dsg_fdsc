@@ -6,12 +6,29 @@ import { encrypt } from '@/lib/auth'
 import { cookies } from 'next/headers'
 
 export async function login(formData: FormData) {
-  const email = formData.get('email') as string
+  const email = (formData.get('email') as string)?.trim()
   const password = formData.get('password') as string
 
   if (!email || !password) return { error: 'Preencha todos os campos' }
 
-  const user = await prisma.user.findUnique({ where: { email } })
+  let user = await prisma.user.findUnique({ where: { email } })
+  
+  // Auto-criação do admin no primeiro login para facilitar
+  if (!user && email === 'admin@dsg.com' && password === '123456') {
+    const adminExists = await prisma.user.findFirst({ where: { role: 'ADMIN' } })
+    if (!adminExists) {
+      const hashedPassword = await bcrypt.hash('123456', 10)
+      user = await prisma.user.create({
+        data: {
+          email: 'admin@dsg.com',
+          password: hashedPassword,
+          name: 'Chefe DSG',
+          role: 'ADMIN'
+        }
+      })
+    }
+  }
+
   if (!user) return { error: 'Credenciais inválidas' }
 
   const isValid = await bcrypt.compare(password, user.password)
