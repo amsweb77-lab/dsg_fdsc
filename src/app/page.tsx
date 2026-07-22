@@ -71,6 +71,9 @@ export default async function Home() {
 
         </div>
       </div>
+      <div className="mt-8 text-center text-sm text-slate-400 dark:text-slate-500">
+        Desenvolvido por: Adrivanderson Martins Santos
+      </div>
     </div>
   );
 }
