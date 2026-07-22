@@ -5,6 +5,7 @@ import { LogoutButton } from './LogoutButton';
 import { ChecklistsTable } from './ChecklistsTable';
 import { AvaliacoesTable } from './AvaliacoesTable';
 import { DashboardChart } from './DashboardChart';
+import { QualityCharts } from './QualityCharts';
 
 export const metadata = {
   title: 'Dashboard Admin | DSG',
@@ -74,6 +75,19 @@ export default async function AdminDashboard() {
     };
   });
 
+  // Calculate Quality Data
+  const publicQualityData = [
+    { name: 'Satisfatório', value: avaliacoes.filter(a => a.limpeza === 'SATISFEITO').length, color: '#10b981' },
+    { name: 'Parcialmente', value: avaliacoes.filter(a => a.limpeza === 'PARCIALMENTE').length, color: '#f59e0b' },
+    { name: 'Inadequada', value: avaliacoes.filter(a => a.limpeza === 'NAO_SATISFEITO').length, color: '#f43f5e' },
+  ];
+
+  const fiscalQualityData = [
+    { name: 'Atende', value: checklists.filter(c => c.criterio === 'ATENDE').length, color: '#10b981' },
+    { name: 'Satisfatório', value: checklists.filter(c => c.criterio === 'SATISFATORIO').length, color: '#f59e0b' },
+    { name: 'Não Atende', value: checklists.filter(c => c.criterio === 'NAO_ATENDE').length, color: '#f43f5e' },
+  ];
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       {/* Navbar */}
@@ -140,6 +154,9 @@ export default async function AdminDashboard() {
 
         {/* Chart */}
         <DashboardChart data={chartData} />
+
+        {/* Quality Charts */}
+        <QualityCharts publicData={publicQualityData} fiscalData={fiscalQualityData} />
 
         {/* Avaliacoes Table */}
         <AvaliacoesTable avaliacoes={avaliacoes} />
