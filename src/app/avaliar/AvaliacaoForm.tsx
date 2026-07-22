@@ -207,7 +207,7 @@ export default function AvaliacaoForm() {
             </div>
             <h3 className="text-xl font-bold mb-2">Já Avaliado</h3>
             <p className="text-sm font-medium">
-              Você já enviou uma avaliação para este banheiro no período da {currentPeriodName}. Agradecemos sua colaboração e volte no próximo turno!
+              Você já enviou uma avaliação para este banheiro no período da {currentPeriodName}. Agradecemos sua colaboração!
             </p>
           </div>
         ) : (
