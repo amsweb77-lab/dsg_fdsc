@@ -51,7 +51,7 @@ export default async function UsuariosPage() {
               <div>
                 <label className="text-sm font-semibold text-slate-600 dark:text-slate-300">Nível de Acesso</label>
                 <select name="role" className="w-full mt-1 p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-brand-primary appearance-none">
-                  <option value="FISCAL">Fiscal</option>
+                  <option value="FISCAL">Encarregado(a)</option>
                   <option value="ADMIN">Administrador (Chefe)</option>
                 </select>
               </div>

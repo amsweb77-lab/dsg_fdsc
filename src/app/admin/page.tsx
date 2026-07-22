@@ -91,7 +91,7 @@ export default async function AdminDashboard() {
               <Activity className="w-8 h-8" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-slate-500">Checklists Fiscais</p>
+              <p className="text-sm font-semibold text-slate-500">Checklists Encarregados(as)</p>
               <h2 className="text-3xl font-bold text-blue-500">{totalChecklists}</h2>
             </div>
           </div>
@@ -159,7 +159,7 @@ export default async function AdminDashboard() {
         {/* Checklists Fiscais Table */}
         <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden">
           <div className="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
-            <h3 className="text-lg font-bold">Checklists Fiscais (Recentes)</h3>
+            <h3 className="text-lg font-bold">Checklists Encarregados(as) (Recentes)</h3>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">

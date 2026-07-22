@@ -41,7 +41,7 @@ export default async function Home() {
                   className="flex items-center justify-center gap-2 w-full bg-brand-secondary/10 text-brand-secondary py-4 px-6 rounded-2xl font-medium hover:bg-brand-secondary/20 transition-all active:scale-95"
                 >
                   <ClipboardCheck className="w-5 h-5" />
-                  Checklist do Fiscal
+                  Checklist do Encarregado(a)
                 </Link>
               )}
             </>

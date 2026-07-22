@@ -126,7 +126,7 @@ export default function ChecklistForm() {
         </div>
         <h2 className="text-3xl font-bold text-slate-800 dark:text-white mb-4">Checklist Salvo!</h2>
         <p className="text-slate-500 dark:text-slate-400 mb-8">
-          A vistoria do fiscal foi registrada no sistema com sucesso.
+          A vistoria do encarregado(a) foi registrada no sistema com sucesso.
         </p>
         <Link href="/" className="inline-block bg-brand-primary text-white py-4 px-8 rounded-2xl font-semibold active:scale-95 transition-all">
           Voltar ao Início
@@ -148,7 +148,7 @@ export default function ChecklistForm() {
         <div className="w-16 h-16 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl flex items-center justify-center mb-4">
           <ClipboardCheck className="w-8 h-8" />
         </div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Checklist do Fiscal</h1>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Checklist do Encarregado(a)</h1>
         <p className="text-sm text-slate-500">Formulário de vistoria detalhada.</p>
       </div>
 
@@ -176,7 +176,7 @@ export default function ChecklistForm() {
         {/* Itens a serem verificados */}
         <section className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden">
           <div className="p-6 border-b border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50">
-            <h3 className="font-semibold text-lg">ITENS A SEREM VERIFICADOS PELO FISCAL</h3>
+            <h3 className="font-semibold text-lg">ITENS A SEREM VERIFICADOS PELO ENCARREGADO(A)</h3>
           </div>
           
           <div className="divide-y divide-slate-100 dark:divide-slate-700">
@@ -270,7 +270,7 @@ export default function ChecklistForm() {
           {isSubmitting ? (
             <div className="w-6 h-6 border-4 border-slate-500/30 border-t-slate-500 rounded-full animate-spin"></div>
           ) : (
-            'Enviar Checklist do Fiscal'
+            'Enviar Checklist do Encarregado(a)'
           )}
         </button>
       </form>

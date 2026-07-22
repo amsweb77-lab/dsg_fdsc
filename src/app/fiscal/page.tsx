@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import ChecklistForm from './ChecklistForm';
 
 export const metadata = {
-  title: 'Checklist do Fiscal | DSG',
+  title: 'Checklist do Encarregado(a) | DSG',
 };
 
 export default function FiscalPage() {
