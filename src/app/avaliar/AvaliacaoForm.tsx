@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Smile, Meh, Frown, Check, Info, Droplet, ArchiveX, MapPin, ArrowLeft } from 'lucide-react';
 import clsx from 'clsx';
