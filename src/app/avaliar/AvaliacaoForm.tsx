@@ -121,23 +121,22 @@ export default function AvaliacaoForm() {
         </div>
         <h2 className="text-3xl font-bold text-slate-800 dark:text-white mb-4">Obrigado!</h2>
         <p className="text-slate-500 dark:text-slate-400 mb-8">
-          Sua avaliação foi registrada com sucesso e ajudará a Diretoria de Serviços Gerais a manter este ambiente limpo.
+          Sua avaliação foi registrada com sucesso e ajudará a Diretoria de Serviços Gerais a manter este ambiente limpo. Você pode fechar esta tela.
         </p>
-        <Link href="/" className="inline-block bg-brand-primary text-white py-4 px-8 rounded-2xl font-semibold active:scale-95 transition-all">
-          Voltar ao Início
-        </Link>
       </div>
     );
   }
 
   return (
     <div className="max-w-md mx-auto p-4 pt-8">
-      <header className="mb-6">
-        <Link href="/" className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors bg-white dark:bg-slate-800 px-4 py-2 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700">
-          <ArrowLeft className="w-4 h-4" />
-          Início
-        </Link>
-      </header>
+      {!idInicial && (
+        <header className="mb-6">
+          <Link href="/" className="inline-flex items-center gap-2 text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors bg-white dark:bg-slate-800 px-4 py-2 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700">
+            <ArrowLeft className="w-4 h-4" />
+            Início
+          </Link>
+        </header>
+      )}
 
       <div className="mb-8 text-center">
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Avaliação do Banheiro</h1>
@@ -152,17 +151,23 @@ export default function AvaliacaoForm() {
             <MapPin className="w-5 h-5 text-brand-primary" />
             Localização do Banheiro
           </label>
-          <select 
-            id="banheiro-select"
-            value={banheiroId}
-            onChange={(e) => setBanheiroId(e.target.value)}
-            className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-brand-primary transition-all appearance-none"
-          >
-            <option value="" disabled>Selecione um banheiro...</option>
-            {BANHEIROS_LISTA.map(nome => (
-              <option key={nome} value={nome}>{nome}</option>
-            ))}
-          </select>
+          {idInicial ? (
+            <div className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-2xl px-4 py-4 font-medium opacity-80 cursor-not-allowed text-sm sm:text-base">
+              {banheiroId}
+            </div>
+          ) : (
+            <select 
+              id="banheiro-select"
+              value={banheiroId}
+              onChange={(e) => setBanheiroId(e.target.value)}
+              className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-2xl px-4 py-4 outline-none focus:ring-2 focus:ring-brand-primary transition-all appearance-none"
+            >
+              <option value="" disabled>Selecione um banheiro...</option>
+              {BANHEIROS_LISTA.map(nome => (
+                <option key={nome} value={nome}>{nome}</option>
+              ))}
+            </select>
+          )}
         </section>
 
         {hasEvaluated ? (
