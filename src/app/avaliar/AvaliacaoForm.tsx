@@ -58,8 +58,28 @@ export default function AvaliacaoForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
+  const [hasEvaluated, setHasEvaluated] = useState(false);
 
-  const canSubmit = banheiroId !== '' && limpeza && papelHigienico !== null && saboneteLiquido !== null && conservacao;
+  // Check if already evaluated
+  useEffect(() => {
+    if (!banheiroId) {
+      setHasEvaluated(false);
+      return;
+    }
+    const saved = localStorage.getItem('avaliacoes_realizadas');
+    if (saved) {
+      const avaliacoes = JSON.parse(saved) as string[];
+      if (avaliacoes.includes(banheiroId)) {
+        setHasEvaluated(true);
+      } else {
+        setHasEvaluated(false);
+      }
+    } else {
+      setHasEvaluated(false);
+    }
+  }, [banheiroId]);
+
+  const canSubmit = banheiroId !== '' && limpeza && papelHigienico !== null && saboneteLiquido !== null && conservacao && !hasEvaluated;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,6 +100,13 @@ export default function AvaliacaoForm() {
     setIsSubmitting(false);
     
     if (result.success) {
+      // Save to localStorage to block future evaluations for this bathroom
+      const saved = localStorage.getItem('avaliacoes_realizadas');
+      const avaliacoes = saved ? JSON.parse(saved) : [];
+      if (!avaliacoes.includes(banheiroId)) {
+        avaliacoes.push(banheiroId);
+        localStorage.setItem('avaliacoes_realizadas', JSON.stringify(avaliacoes));
+      }
       setSubmitted(true);
     } else {
       setError(result.error || 'Ocorreu um erro.');
@@ -137,6 +164,19 @@ export default function AvaliacaoForm() {
             ))}
           </select>
         </section>
+
+        {hasEvaluated ? (
+          <div className="bg-amber-50 border-2 border-amber-200 text-amber-700 p-8 rounded-3xl text-center shadow-sm animate-in fade-in zoom-in">
+            <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Check className="w-8 h-8 text-amber-600" />
+            </div>
+            <h3 className="text-xl font-bold mb-2">Já Avaliado</h3>
+            <p className="text-sm font-medium">
+              Você já enviou uma avaliação para este banheiro hoje. Agradecemos muito pela sua colaboração!
+            </p>
+          </div>
+        ) : (
+          <>
 
         {/* Limpeza Geral */}
         <section className="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
@@ -281,6 +321,8 @@ export default function AvaliacaoForm() {
             'Enviar Avaliação'
           )}
         </button>
+        </>
+        )}
       </form>
     </div>
   );
