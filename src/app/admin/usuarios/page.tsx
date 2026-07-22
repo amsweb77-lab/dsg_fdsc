@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { ArrowLeft, Users, Shield, User, Trash2 } from 'lucide-react'
 import { LogoutButton } from '../LogoutButton'
 import { createUser, deleteUser } from './actions'
+import { EditUserModal } from './EditUserModal'
 
 export default async function UsuariosPage() {
   const users = await prisma.user.findMany({ orderBy: { createdAt: 'desc' } })
@@ -80,10 +81,11 @@ export default async function UsuariosPage() {
                       <p className="text-sm text-slate-500">{user.email}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
                     <span className={`text-xs font-bold px-3 py-1 rounded-full ${user.role === 'ADMIN' ? 'bg-indigo-100 text-indigo-700' : 'bg-emerald-100 text-emerald-700'}`}>
                       {user.role === 'ADMIN' ? 'Administrador' : 'Encarregado(a)'}
                     </span>
+                    <EditUserModal user={{ id: user.id, name: user.name, email: user.email, role: user.role }} />
                     <form action={async (formData) => {
                       'use server';
                       await deleteUser(formData);

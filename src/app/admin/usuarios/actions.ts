@@ -36,3 +36,33 @@ export async function deleteUser(formData: FormData) {
   await prisma.user.delete({ where: { id } })
   revalidatePath('/admin/usuarios')
 }
+
+export async function updateUser(formData: FormData) {
+  const id = formData.get('id') as string
+  const email = formData.get('email') as string
+  const name = formData.get('name') as string
+  const role = formData.get('role') as 'ADMIN' | 'FISCAL'
+  const password = formData.get('password') as string
+
+  if (!id || !email || !name || !role) {
+    return { error: 'Preencha os campos obrigatórios' }
+  }
+
+  const existing = await prisma.user.findUnique({ where: { email } })
+  if (existing && existing.id !== id) return { error: 'E-mail já cadastrado por outro usuário' }
+
+  const data: any = { email, name, role }
+  
+  if (password && password.trim().length > 0) {
+    if (password.length < 6) return { error: 'A senha deve ter no mínimo 6 caracteres' }
+    data.password = await bcrypt.hash(password, 10)
+  }
+
+  await prisma.user.update({
+    where: { id },
+    data
+  })
+
+  revalidatePath('/admin/usuarios')
+  return { success: true }
+}
