@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Check, ClipboardCheck, MapPin, ArrowLeft } from 'lucide-react';
 import clsx from 'clsx';
@@ -82,6 +82,29 @@ export default function ChecklistForm() {
 
   // Verificando se tudo foi preenchido
   const isTodosItensPreenchidos = Object.values(itens).every(val => val !== null);
+  
+  // Auto-cálculo do critério
+  useEffect(() => {
+    if (isTodosItensPreenchidos) {
+      const naoCount = Object.values(itens).filter(val => val === false).length;
+      if (naoCount >= 4) {
+        setCriterio('NAO_ATENDE');
+      } else {
+        const requiredItems = [
+          'pisoLimpo', 'vasosHigienizados', 'piasLimpas', 'papelHigienico',
+          'papelToalha', 'sabonete', 'lixeirasLimpas', 'ambienteSemOdor'
+        ];
+        const hasFailedRequired = requiredItems.some(id => itens[id] === false);
+        
+        if (hasFailedRequired) {
+          setCriterio('SATISFATORIO');
+        } else {
+          setCriterio('ATENDE');
+        }
+      }
+    }
+  }, [itens, isTodosItensPreenchidos]);
+
   const isCriterioValido = criterio === 'NAO_ATENDE' ? observacoes.trim().length > 0 : true;
   
   const canSubmit = banheiroId !== '' && criterio !== '' && isTodosItensPreenchidos && isCriterioValido;
