@@ -59,6 +59,16 @@ export default function AvaliacaoForm() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
   const [hasEvaluated, setHasEvaluated] = useState(false);
+  const [currentPeriodName, setCurrentPeriodName] = useState('');
+
+  const getCurrentPeriod = () => {
+    const hours = new Date().getHours();
+    return hours < 12 ? 'manhã' : 'tarde/noite';
+  };
+
+  const getCurrentDate = () => {
+    return new Date().toISOString().split('T')[0];
+  };
 
   // Check if already evaluated
   useEffect(() => {
@@ -66,12 +76,22 @@ export default function AvaliacaoForm() {
       setHasEvaluated(false);
       return;
     }
-    const saved = localStorage.getItem('avaliacoes_realizadas');
+    
+    const period = getCurrentPeriod();
+    setCurrentPeriodName(period);
+    
+    const saved = localStorage.getItem('avaliacoes_realizadas_v2');
     if (saved) {
-      const avaliacoes = JSON.parse(saved) as string[];
-      if (avaliacoes.includes(banheiroId)) {
-        setHasEvaluated(true);
-      } else {
+      try {
+        const avaliacoes = JSON.parse(saved) as { id: string, date: string, period: string }[];
+        const today = getCurrentDate();
+        
+        const alreadyEvaluated = avaliacoes.some(a => 
+          a.id === banheiroId && a.date === today && a.period === period
+        );
+        
+        setHasEvaluated(alreadyEvaluated);
+      } catch (e) {
         setHasEvaluated(false);
       }
     } else {
@@ -100,13 +120,23 @@ export default function AvaliacaoForm() {
     setIsSubmitting(false);
     
     if (result.success) {
-      // Save to localStorage to block future evaluations for this bathroom
-      const saved = localStorage.getItem('avaliacoes_realizadas');
-      const avaliacoes = saved ? JSON.parse(saved) : [];
-      if (!avaliacoes.includes(banheiroId)) {
-        avaliacoes.push(banheiroId);
-        localStorage.setItem('avaliacoes_realizadas', JSON.stringify(avaliacoes));
-      }
+      // Save to localStorage to block future evaluations for this bathroom in this period
+      const saved = localStorage.getItem('avaliacoes_realizadas_v2');
+      let avaliacoes = saved ? JSON.parse(saved) : [];
+      
+      const today = getCurrentDate();
+      const period = getCurrentPeriod();
+      
+      // Filter out old dates to keep localStorage small
+      avaliacoes = avaliacoes.filter((a: any) => a.date === today);
+      
+      avaliacoes.push({
+        id: banheiroId,
+        date: today,
+        period: period
+      });
+      
+      localStorage.setItem('avaliacoes_realizadas_v2', JSON.stringify(avaliacoes));
       setSubmitted(true);
     } else {
       setError(result.error || 'Ocorreu um erro.');
@@ -177,7 +207,7 @@ export default function AvaliacaoForm() {
             </div>
             <h3 className="text-xl font-bold mb-2">Já Avaliado</h3>
             <p className="text-sm font-medium">
-              Você já enviou uma avaliação para este banheiro hoje. Agradecemos muito pela sua colaboração!
+              Você já enviou uma avaliação para este banheiro no período da {currentPeriodName}. Agradecemos sua colaboração e volte no próximo turno!
             </p>
           </div>
         ) : (
