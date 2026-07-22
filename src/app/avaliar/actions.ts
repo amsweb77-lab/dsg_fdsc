@@ -22,8 +22,8 @@ export async function saveAvaliacao(data: {
       }
     });
     return { success: true, id: result.id };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error saving avaliacao:", error);
-    return { success: false, error: 'Falha ao salvar avaliação. Tente novamente.' };
+    return { success: false, error: 'Erro: ' + (error?.message || 'Falha desconhecida') };
   }
 }

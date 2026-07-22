@@ -36,8 +36,8 @@ export async function saveChecklistFiscal(data: {
       }
     });
     return { success: true, id: result.id };
-  } catch (error) {
-    console.error("Error saving checklist:", error);
-    return { success: false, error: 'Falha ao salvar checklist. Tente novamente.' };
+  } catch (error: any) {
+    console.error("Error saving checklist fiscal:", error);
+    return { success: false, error: 'Erro: ' + (error?.message || 'Falha desconhecida') };
   }
 }
