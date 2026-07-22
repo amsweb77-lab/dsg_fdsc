@@ -61,7 +61,7 @@ export default function LoginPage() {
                 type="email" 
                 required 
                 className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-brand-primary" 
-                placeholder="admin@dsg.com"
+                placeholder="Digite seu e-mail"
               />
             </div>
           </div>
@@ -75,7 +75,7 @@ export default function LoginPage() {
                 type="password" 
                 required 
                 className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-brand-primary" 
-                placeholder="••••••••"
+                placeholder="Digite sua senha"
               />
             </div>
           </div>
