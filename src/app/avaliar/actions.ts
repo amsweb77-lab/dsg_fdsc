@@ -2,6 +2,8 @@
 
 import prisma from '@/lib/prisma';
 
+import { revalidatePath } from 'next/cache';
+
 export async function saveAvaliacao(data: {
   banheiroId: string;
   limpeza: string;
@@ -21,6 +23,9 @@ export async function saveAvaliacao(data: {
         observacoes: data.observacoes || null,
       }
     });
+    
+    revalidatePath('/', 'layout');
+    
     return { success: true, id: result.id };
   } catch (error: any) {
     console.error("Error saving avaliacao:", error);

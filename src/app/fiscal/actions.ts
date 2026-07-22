@@ -2,6 +2,8 @@
 
 import prisma from '@/lib/prisma';
 
+import { revalidatePath } from 'next/cache';
+
 export async function saveChecklistFiscal(data: {
   banheiroId: string;
   criterio: string;
@@ -35,6 +37,9 @@ export async function saveChecklistFiscal(data: {
         portasDivisoriasLimpas: data.portasDivisoriasLimpas,
       }
     });
+    
+    revalidatePath('/', 'layout');
+    
     return { success: true, id: result.id };
   } catch (error: any) {
     console.error("Error saving checklist fiscal:", error);
