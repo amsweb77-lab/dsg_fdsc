@@ -82,7 +82,7 @@ export default async function UsuariosPage() {
                   </div>
                   <div className="flex items-center gap-4">
                     <span className={`text-xs font-bold px-3 py-1 rounded-full ${user.role === 'ADMIN' ? 'bg-indigo-100 text-indigo-700' : 'bg-emerald-100 text-emerald-700'}`}>
-                      {user.role}
+                      {user.role === 'ADMIN' ? 'Administrador' : 'Encarregado(a)'}
                     </span>
                     <form action={async (formData) => {
                       'use server';
