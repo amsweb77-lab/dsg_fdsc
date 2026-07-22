@@ -44,6 +44,20 @@ export default async function Home() {
                   Checklist do Encarregado(a)
                 </Link>
               )}
+              <form action={async () => {
+                'use server';
+                const { logout } = await import('@/lib/auth');
+                const { redirect } = await import('next/navigation');
+                await logout();
+                redirect('/login');
+              }}>
+                <button 
+                  type="submit" 
+                  className="flex items-center justify-center gap-2 w-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 py-4 px-6 rounded-2xl font-medium hover:bg-slate-200 dark:hover:bg-slate-600 transition-all active:scale-95 mt-2"
+                >
+                  Sair / Trocar de Conta
+                </button>
+              </form>
             </>
           ) : (
             <Link 
