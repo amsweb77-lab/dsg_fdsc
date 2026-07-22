@@ -3,6 +3,7 @@
 import prisma from '@/lib/prisma';
 
 import { revalidatePath } from 'next/cache';
+import { getSession } from '@/lib/auth';
 
 export async function saveChecklistFiscal(data: {
   banheiroId: string;
@@ -20,6 +21,7 @@ export async function saveChecklistFiscal(data: {
   portasDivisoriasLimpas: boolean;
 }) {
   try {
+    const session = await getSession();
     const result = await prisma.checklistFiscal.create({
       data: {
         banheiroId: data.banheiroId,
@@ -35,6 +37,7 @@ export async function saveChecklistFiscal(data: {
         lixeirasLimpas: data.lixeirasLimpas,
         ambienteSemOdor: data.ambienteSemOdor,
         portasDivisoriasLimpas: data.portasDivisoriasLimpas,
+        userName: session?.name || session?.email || 'Desconhecido',
       }
     });
     

@@ -36,6 +36,7 @@ model ChecklistFiscal {
   lixeirasLimpas          Boolean
   ambienteSemOdor         Boolean
   portasDivisoriasLimpas  Boolean
+  userName                String?
   createdAt               DateTime @default(now())
 }
 

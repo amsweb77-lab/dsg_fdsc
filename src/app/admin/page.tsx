@@ -166,6 +166,7 @@ export default async function AdminDashboard() {
               <thead>
                 <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 text-sm border-b border-slate-100 dark:border-slate-700">
                   <th className="p-4 font-semibold">Data/Hora</th>
+                  <th className="p-4 font-semibold">Encarregado(a)</th>
                   <th className="p-4 font-semibold">Banheiro</th>
                   <th className="p-4 font-semibold">Critério</th>
                   <th className="p-4 font-semibold">Itens OK/Total</th>
@@ -175,7 +176,7 @@ export default async function AdminDashboard() {
               <tbody>
                 {checklists.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="p-8 text-center text-slate-500">
+                    <td colSpan={6} className="p-8 text-center text-slate-500">
                       Nenhum checklist registrado ainda.
                     </td>
                   </tr>
@@ -191,6 +192,9 @@ export default async function AdminDashboard() {
                             <Clock className="w-4 h-4 text-slate-400" />
                             {c.createdAt.toLocaleString('pt-BR')}
                           </div>
+                        </td>
+                        <td className="p-4 font-medium text-slate-700 dark:text-slate-300">
+                          {c.userName || 'Sistema'}
                         </td>
                         <td className="p-4 font-medium">{c.banheiroId}</td>
                         <td className="p-4">
