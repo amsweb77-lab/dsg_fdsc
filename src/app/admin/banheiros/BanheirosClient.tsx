@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Plus, Edit, Trash2, MapPin, Loader2 } from 'lucide-react';
+import { ArrowLeft, Plus, Edit, Trash2, MapPin, Loader2, DatabaseBackup } from 'lucide-react';
 
 type Banheiro = {
   id: string;
@@ -17,6 +17,7 @@ export default function BanheirosClient() {
   const [editId, setEditId] = useState<string | null>(null);
   const [nomeForm, setNomeForm] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [isRestoring, setIsRestoring] = useState(false);
 
   useEffect(() => {
     fetchBanheiros();
@@ -92,6 +93,21 @@ export default function BanheirosClient() {
     }
   };
 
+  const handleRestoreDefaults = async () => {
+    if (!confirm('Deseja restaurar os 57 banheiros padrão? (Banheiros que já existem serão mantidos).')) return;
+    setIsRestoring(true);
+    try {
+      await fetch('/api/banheiros/seed', { method: 'POST' });
+      await fetchBanheiros();
+      alert('Banheiros padrão restaurados com sucesso!');
+    } catch (error) {
+      console.error('Erro ao restaurar banheiros:', error);
+      alert('Erro ao restaurar banheiros.');
+    } finally {
+      setIsRestoring(false);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-4 pt-8">
       <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
@@ -104,13 +120,23 @@ export default function BanheirosClient() {
             Gerenciar Banheiros
           </h1>
         </div>
-        <button 
-          onClick={() => handleOpenModal()}
-          className="flex items-center gap-2 bg-brand-primary hover:bg-brand-primary/90 text-white px-4 py-2 rounded-xl transition-all font-medium"
-        >
-          <Plus className="w-5 h-5" />
-          Novo Banheiro
-        </button>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={handleRestoreDefaults}
+            disabled={isRestoring}
+            className="flex items-center gap-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 px-4 py-2 rounded-xl transition-all font-medium disabled:opacity-50"
+          >
+            {isRestoring ? <Loader2 className="w-5 h-5 animate-spin" /> : <DatabaseBackup className="w-5 h-5" />}
+            Restaurar Padrões
+          </button>
+          <button 
+            onClick={() => handleOpenModal()}
+            className="flex items-center gap-2 bg-brand-primary hover:bg-brand-primary/90 text-white px-4 py-2 rounded-xl transition-all font-medium"
+          >
+            <Plus className="w-5 h-5" />
+            Novo Banheiro
+          </button>
+        </div>
       </header>
 
       {loading ? (
