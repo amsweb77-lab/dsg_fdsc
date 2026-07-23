@@ -5,39 +5,18 @@ import QRCode from 'react-qr-code';
 import { ArrowLeft, Printer } from 'lucide-react';
 import Link from 'next/link';
 
-const BANHEIROS_DATA = [
-  { local: 'Forinho', andar: 'Térreo', ala: '1' },
-  { local: 'Forinho', andar: 'Térreo', ala: '3' },
-  { local: 'Forinho', andar: '1º Andar', ala: '1' },
-  { local: 'Forinho', andar: '1º Andar', ala: '3' },
-  { local: 'Anexo', andar: 'Térreo', ala: '6' },
-  { local: 'Anexo', andar: 'Térreo', ala: '4' },
-  { local: 'Anexo', andar: 'S1', ala: '1' },
-  { local: 'Anexo', andar: 'S2', ala: '1' },
-  { local: 'Anexo', andar: '1º Andar', ala: '4' },
-  { local: 'Anexo', andar: '3º Andar', ala: '6' },
-  { local: 'Anexo', andar: '3º Andar', ala: '4' },
-  { local: 'Anexo', andar: '4º Andar', ala: '6' },
-  { local: 'Anexo', andar: '4º Andar', ala: '4' },
-  { local: 'Anexo', andar: '5º Andar', ala: '6' },
-  { local: 'Anexo', andar: '5º Andar', ala: '4' },
-  { local: 'Anexo', andar: '6º Andar', ala: '6' },
-  { local: 'Anexo', andar: '6º Andar', ala: '4' },
-  { local: 'Anexo', andar: '7º Andar', ala: '6' },
-  { local: 'Anexo', andar: '7º Andar', ala: '4' },
-];
 
-const TIPOS = ['Masculino', 'Feminino', 'PCD'];
-
-const BANHEIROS_LISTA = BANHEIROS_DATA.flatMap(b => 
-  TIPOS.map(tipo => `${b.local} | ${b.andar} | Ala ${b.ala} | ${tipo}`)
-);
 
 export default function QRCodesPage() {
   const [baseUrl, setBaseUrl] = useState('');
+  const [banheirosLista, setBanheirosLista] = useState<{id: string, nome: string}[]>([]);
 
   useEffect(() => {
     setBaseUrl(window.location.origin);
+    fetch('/api/banheiros')
+      .then(res => res.json())
+      .then(data => setBanheirosLista(data))
+      .catch(err => console.error(err));
   }, []);
 
   return (
@@ -61,15 +40,15 @@ export default function QRCodesPage() {
 
         {/* Grid for printing */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 print:grid-cols-3 print:gap-4 print:p-4">
-          {baseUrl && BANHEIROS_LISTA.map((banheiro, index) => {
-            const url = `${baseUrl}/avaliar?id_banheiro=${encodeURIComponent(banheiro)}`;
+          {baseUrl && banheirosLista.map((banheiro, index) => {
+            const url = `${baseUrl}/avaliar?id_banheiro=${encodeURIComponent(banheiro.nome)}`;
             return (
               <div 
-                key={index} 
+                key={banheiro.id} 
                 className="bg-white dark:bg-slate-800 p-6 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col items-center text-center print:shadow-none print:border-2 print:border-black print:rounded-2xl print:break-inside-avoid print:p-4"
               >
                 <h3 className="font-bold text-sm text-slate-800 dark:text-white mb-4 print:text-black min-h-[40px] flex items-center justify-center leading-tight">
-                  {banheiro}
+                  {banheiro.nome}
                 </h3>
                 
                 <div className="bg-white p-3 rounded-2xl border-2 border-slate-100 dark:border-slate-700 mb-4 print:border-none print:p-0">

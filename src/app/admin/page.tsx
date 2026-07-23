@@ -113,6 +113,10 @@ export default async function AdminDashboard() {
               <Users className="w-4 h-4" />
               Usuários
             </Link>
+            <Link href="/admin/banheiros" className="flex items-center gap-2 bg-amber-500/10 text-amber-600 px-4 py-2 rounded-xl font-medium hover:bg-amber-500/20 transition-all">
+              <LayoutDashboard className="w-4 h-4" />
+              Banheiros
+            </Link>
             <LogoutButton />
           </div>
         </div>
